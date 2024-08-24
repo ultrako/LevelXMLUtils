@@ -27,11 +27,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish Windows
-      run: dotnet publish --self-contained true -r win-x64 --property:PublishDir=publish-windows
+      run: dotnet publish --self-contained true -r win-x64 --property:PublishDir=publish-windows /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
     - name: Publish Linux
-      run: dotnet publish --self-contained true -r linux-x64 --property:PublishDir=publish-linux
+      run: dotnet publish --self-contained true -r linux-x64 --property:PublishDir=publish-linux /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
     - name: Publish OSX
-      run: dotnet publish --self-contained true -r osx-x64 --property:PublishDir=publish-osx
+      run: dotnet publish --self-contained true -r osx-x64 --property:PublishDir=publish-osx /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
     - name: Zip release files
       run: mkdir -p binaries;
         for project in $(grep "Project(" LevelXMLUtils.sln | cut -d'"' -f4);
