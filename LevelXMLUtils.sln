@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseLevel", "ReverseLevel\ReverseLevel.csproj", "{FDAC9699-E06D-48DF-ADEE-3C8CD656DD9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paperify", "Paperify\Paperify.csproj", "{54676B1B-883A-4E35-B915-8A1A0E4C8DBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{FDAC9699-E06D-48DF-ADEE-3C8CD656DD9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDAC9699-E06D-48DF-ADEE-3C8CD656DD9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDAC9699-E06D-48DF-ADEE-3C8CD656DD9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54676B1B-883A-4E35-B915-8A1A0E4C8DBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54676B1B-883A-4E35-B915-8A1A0E4C8DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54676B1B-883A-4E35-B915-8A1A0E4C8DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54676B1B-883A-4E35-B915-8A1A0E4C8DBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
