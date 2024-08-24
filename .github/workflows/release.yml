@@ -45,8 +45,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag-name: ${{ vars.release-version }}
-        release-name: ${{ vars.release-version }}
+        tag_name: ${{ vars.release-version }}
+        release_name: ${{ vars.release-version }}
         draft: false
         prerelease: ${{ vars.is-prerelease }}
     - uses: actions/upload-release-asset@v1.0.1
