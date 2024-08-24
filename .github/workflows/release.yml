@@ -1,0 +1,66 @@
+
+name: .NET release
+
+on:
+  workflow_dispatch:
+    inputs:
+        release-version:
+            description: "The version of the release"
+            required: true
+        is-prerelease:
+            description: "Whether this is a prerelease version"
+            required: true
+            type: boolean
+            default: false
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish Windows
+      run: dotnet publish --self-contained true -r win-x64 --property:PublishDir=publish-windows
+    - name: Publish Linux
+      run: dotnet publish --self-contained true -r linux-x64 --property:PublishDir=publish-linux
+    - name: Publish OSX
+      run: dotnet publish --self-contained true -r osx-x64 --property:PublishDir=publish-osx
+    - name: Zip release files
+      run: mkdir -p binaries;
+        for project in $(grep "Project(" LevelXMLUtils.sln | cut -d'"' -f4);
+        do cp $project/publish-windows/${project}.exe binaries/;
+        cp $project/publish-linux/$project binaries/${project}-Linux;
+        cp $project/publish-osx/$project binaries/${project}-Mac;
+        done;
+        zip -r binaries.zip binaries
+    - name: Create draft release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag-name: ${{ vars.release-version }}
+        release-name: ${{ vars.release-version }}
+        draft: false
+        prerelease: ${{ vars.is-prerelease }}
+    - uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./binaries.zip
+        asset_name: binaries.zip
+        asset_content_type: application/zip
+  
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
+          
