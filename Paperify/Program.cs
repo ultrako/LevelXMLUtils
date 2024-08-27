@@ -23,40 +23,17 @@ foreach (Triangle triangle in level.Shapes.Concat(level.Groups.SelectMany(group 
     entities.Add(art);
 }
 
-double controlPointOffset = (4 * (Math.Sqrt(2) - 1)) / 3;
-
-Vertex GetBezierOvalQuarterCoords(double centerX, double centerY, double sizeX, double sizeY)
-{
-    return new Vertex(
-        new(centerX - sizeX, centerY),
-        new(centerX - sizeX, centerY - controlPointOffset * sizeY),
-        new(centerX - controlPointOffset * sizeX, centerY - sizeY)
-    );
-}
-
-List<Vertex> GetBezierOvalCoords(double centerX, double centerY, double sizeX, double sizeY)
-{
-    return
-    [
-        GetBezierOvalQuarterCoords(centerX, centerY, -sizeX, sizeY),
-        GetBezierOvalQuarterCoords(centerX, centerY, sizeX, sizeY),
-        GetBezierOvalQuarterCoords(centerX, centerY, sizeX, -sizeY),
-        GetBezierOvalQuarterCoords(centerX, centerY, -sizeX, -sizeY)
-    ];
-}
-
 foreach (Circle circle in level.Shapes)
 {
     Art art = new();
-    // double radius = circle.Width/2.0;
-    // double circumpherence = circle.Width * Math.PI;
-    // int segments = (int)(circumpherence/crumpleLength);
-    // segments = Math.Clamp(segments, 3, int.MaxValue);
-    // foreach (double radians in Enumerable.Range(0, segments).Select(index => Math.Tau * (index / (double)segments)))
-    // {
-    //     art.Vertices.Add(new(new(Math.Cos(radians)*radius, Math.Sin(radians)*radius)));
-    // }
-    
+    double radius = circle.Width/2.0;
+    double circumpherence = circle.Width * Math.PI;
+    int segments = (int)(circumpherence/crumpleLength);
+    segments = Math.Clamp(segments, 3, int.MaxValue);
+    foreach (double radians in Enumerable.Range(0, segments).Select(index => Math.Tau * (index / (double)segments)))
+    {
+        art.Vertices.Add(new(new(Math.Cos(radians)*radius, Math.Sin(radians)*radius)));
+    }
     art.Width = circle.Width;
     art.Height = circle.Width;
     art.X = circle.X;
