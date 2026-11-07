@@ -8,6 +8,8 @@ A collection of programs that parse Happy Wheels LevelXML strings and transform 
 - `LevelTool`: the toolkit's command line (codegen, minify, trace, svg, pixelart).
 - `tools/video-frames`: chooses a video's frames for a trigger screen ([README](tools/video-frames/README.md)).
 - `tools/audio-mosaic`: makes a song out of the game's sound effects ([README](tools/audio-mosaic/README.md)).
+- `tools/game-mod`: a modded build of the web game served locally, to play a level XML file like a published level
+  ([README](tools/game-mod/README.md)).
 
 ## Examples
 
