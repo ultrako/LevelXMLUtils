@@ -131,6 +131,27 @@ of the vertices, which looks the same.
 - `VectorTrace`: any picture traced into a few smooth art shapes (palette in OKLab, Bézier fitting), and
   `VectorTrace.Render` to preview shapes the way the game draws them.
 
+## Video and sound (`Playback/`)
+
+`Video` plays a video with triggers at the game's 30 frames a second. A clock steps a `UnaryCounter`, and each frame's
+relay sends its pixel changes and starts its sounds.
+
+- **Decoders:** `VideoDecoder` plays black and white with row and column commands instead of one arm per pixel
+  change. `GreyVideoDecoder` sets pixels to grey levels.
+- **The decoder's commands:**
+  - **Bands:** rows are grouped in bands, so a column command reaches only the selected band.
+  - **Row steps:** "down d" selects a row a few below the last one, so the frames repeat a few commands that compress
+    well.
+  - **Inversion:** a row where most pixels change is inverted first.
+  - A frame lists a command once for each row it changes in.
+- **Sounds:** onsets come from tools/audio-mosaic. `SoundChords` shares groups of sounds that many frames start
+  together; tied onsets (a repeated stretch of the song) play through one relay.
+- **Inputs:** `Video.ReadFrames` and `ReadLevels` read what tools/video-frames writes, `ReadOnsets` what the mosaic
+  writes, and `ReadVideo` takes frames straight from a video file with ffmpeg.
+- **Optimizing:** run `LevelCruncher.OptimizeTriggers` with `DecoderTriggers` kept, then `MinifyRelayTriggers` and,
+  last, `OrderTriggersByUse`.
+- **Example:** [Examples/VideoDemo](../Examples/VideoDemo) builds a Bad Apple!! level with sound from the video file.
+
 ## First-person raycaster (`Raycasting/`)
 
 `Raycaster` draws a first-person view of a grid map with triggers: walls in perspective, shaded by face and distance, a

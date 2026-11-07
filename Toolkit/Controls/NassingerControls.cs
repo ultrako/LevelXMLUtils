@@ -263,7 +263,7 @@ public class NassingerControls : TriggerContraption, IControls
                     extra.Add(new Rectangle { X = flipper.X + side * 23, Y = flipper.Y + half + 2, Width = 6, Height = 4, Fixed = true, FillColor = 0x808080, OutlineColor = -1 });
                 }
                 if (torque <= 0) { continue; }
-                PinJoint spring = new PinJoint(flipper.First, flipper.Second)
+                PinJoint spring = new PinJoint(flipper.First!, flipper.Second!)
                 {
                     X = flipper.X, Y = flipper.Y, Motorized = true, Speed = -toward * tuning.SpringSpeed, Torque = torque, CollideConnected = false, VehicleControlled = false,
                 };
@@ -301,7 +301,7 @@ public class NassingerControls : TriggerContraption, IControls
                 jet.Limit = true;
                 jet.LowerLimit = -tuning.JetTravel;
                 jet.UpperLimit = 0;
-                SlidingJoint spring = new SlidingJoint(jet.First, jet.Second)
+                SlidingJoint spring = new SlidingJoint(jet.First!, jet.Second!)
                 {
                     X = jet.X, Y = jet.Y, Angle = jet.Angle, Motorized = true, Speed = tuning.JetSpringSpeed, Force = tuning.JetSpringForce, CollideConnected = false, VehicleControlled = false,
                 };
