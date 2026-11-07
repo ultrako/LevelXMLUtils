@@ -98,6 +98,28 @@ public class PixelArt
 		}
 	}
 
+	/// <summary>The point a picture stands on: the middle of its lowest row of drawn pixels, at that row's bottom edge (in pixels from the top left).</summary>
+	public (double x, double y) FloorAnchor()
+	{
+		for (int y = Height - 1; y >= 0; y--)
+		{
+			int min = -1, max = -1;
+			for (int x = 0; x < Width; x++) { if (Pixels[x, y] is not null) { if (min < 0) { min = x; } max = x; } }
+			if (min >= 0) { return ((min + max + 1) / 2.0, y + 1); }
+		}
+		throw new InvalidOperationException("the picture has no pixels");
+	}
+
+	/// <summary>For each pixel column, the fraction of the picture's drawn pixels that are in it (they add up to 1).</summary>
+	public double[] ColumnMass()
+	{
+		double[] mass = new double[Width];
+		double total = 0;
+		for (int y = 0; y < Height; y++) { for (int x = 0; x < Width; x++) { if (Pixels[x, y] is not null) { mass[x]++; total++; } } }
+		if (total > 0) { for (int x = 0; x < Width; x++) { mass[x] /= total; } }
+		return mass;
+	}
+
 	public IEnumerable<int> Colors => Pixels.Cast<int?>().OfType<int>().Distinct();
 
 	/// <summary>The pixels of a colour, with anything it encloses that is entirely opaque filled in (see the class comment), except pixels of

@@ -125,11 +125,56 @@ of the vertices, which looks the same.
 
 ## Art (`Art/`)
 
-- `PixelArt`: a pixel-art image as one art shape per colour (not one per pixel), with recolouring filters.
+- `PixelArt`: a pixel-art image as one art shape per colour (not one per pixel).
 - `PixelFont`: text set in a pixel font as `PixelArt`; `PixelFont.Monogram()` is the built-in font.
 - `SvgArt`: an SVG's paths, curves and arcs as art shapes.
 - `VectorTrace`: any picture traced into a few smooth art shapes (palette in OKLab, Bézier fitting), and
   `VectorTrace.Render` to preview shapes the way the game draws them.
+
+## First-person raycaster (`Raycasting/`)
+
+`Raycaster` draws a first-person view of a grid map with triggers: walls in perspective, shaded by face and distance, a
+fogged floor and ceiling, striped wall textures, and sprites (pictures standing in cells, hidden behind walls). It also
+does walking, strafing and turning, with collision that slides along walls.
+
+```csharp
+RaycastMap map = RaycastMap.FromRows(rows, new Dictionary<char, int> { ['#'] = 0, ['o'] = 1 },
+    new WallMaterial[] { new(0xD9B69B), new(0xDCD7CF, Texture: new[] { 1, 0.85, 0.85, 1, 1, 0.85, 0.85, 1 }) });
+Raycaster view = new(new RaycastSettings(), map, startX: 2, startY: 4, startFacing: 8,
+    sprites: new[] { new RaycastSprite(12, 4, new[] { leverOff, leverOn }) });
+keys.UpOn.Connect(view.Forward);      // and Back, StrafeLeft, StrafeRight, TurnLeft, TurnRight
+startTrigger.Connect(view.Start);     // once, when the level starts
+view.OnCell(14, 8).Connect(win.Input); // fired during each redraw while the player is in that cell
+```
+
+- **The view:** `RaycastSettings` sets the screen columns, distance steps, facings, field of view, view range, wall
+  height, screen position, shading and fog. Columns times distance steps sets most of the shape count and the frame
+  time: 120 by 50 runs at full frame rate. The defaults fill the game's 900 by 500 window at the level's top left.
+- **Building on it:** a level reacts to where the player is with `OnCell`, adds its own relays to the facing groups
+  with `ForFacings` (enabled only while the player faces one of the given ways), and switches a sprite's picture with
+  `ShowState` and `Hide`, then fires `Redraw`. A sprite made with `blocking:` stops the player walking into its cell
+  until `Unblock` (and again after `Block`). Levers, doors and goals are built that way.
+- **Sprites:** a sprite can have simpler drawings for further away (`farther:`, from a distance in cells on).
+  Sprites cost physics bodies, about 26 per state at the defaults, and the game allows 1,024 in all.
+  Sprites with the same pictures that are never on the screen together share their bodies.
+- **Optimizing:** run `LevelCruncher.OptimizeTriggers` on the level, since much of the wiring is relays it folds away.
+- **Example:** [Examples/RaycastDemo](../Examples/RaycastDemo) builds a playable level with the controls below: a
+  lever that lowers the spikes blocking a doorway, and a finish line past them. Its map is 17 by 11 cells, and it
+  saves at about 630 KB compressed.
+
+## Keyboard controls (`Controls/`)
+
+`NassingerControls` is a vehicle whose keys move parts into sensors: Up, Down, Left, Right, Space, Shift and Ctrl
+each have an `On` and an `Off` output.
+
+- **The vehicle:** Nassinger's. `ControlsTuning` changes it so each part travels a short, limited way and springs
+  back, which makes taps reliable.
+- **Held keys:** a repeat interval for the arrow keys turns a held key into steps, on a trigger clock that also
+  catches one-tick taps.
+- **Using it:** the player has to press Space first to take hold of the controls. They only work with the pogostick
+  guy (`Character.PogostickMan`, forced, his vehicle hidden).
+- **`SeatedControls`:** puts the controls out of earshot of their jets, with the player in a seat at the spawn (the
+  start trigger deletes the joint that linked the two, and the keys stay linked).
 
 ## Command line (`LevelTool/`)
 

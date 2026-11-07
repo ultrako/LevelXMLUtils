@@ -5,6 +5,11 @@
 monogram by Vinícius Menézio (datagoblin), https://datagoblin.itch.io/monogram, released under Creative Commons Zero
 (CC0). See Toolkit/Fonts/credits.txt.
 
+## The controls vehicle (Toolkit/Controls/NassingerControls.levelXML)
+
+The keyboard controls vehicle is by Nassinger, included with their permission. `NassingerControls` and
+`ControlsTuning` build on it.
+
 ## svgpath (the arc-to-curve conversion in Toolkit/Art/SvgArt.cs, `A2C`)
 
 Ported from fontello's svgpath, https://github.com/fontello/svgpath, MIT licence:

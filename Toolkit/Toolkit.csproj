@@ -19,6 +19,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Fonts/monogram-bitmap.json" LogicalName="LevelXMLUtils.Fonts.monogram-bitmap.json" />
     <None Include="Fonts/credits.txt" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Controls/NassingerControls.levelXML" LogicalName="LevelXMLUtils.Controls.NassingerControls.levelXML" />
+    <EmbeddedResource Include="Controls/PlayerHolder.levelXML" LogicalName="LevelXMLUtils.Controls.PlayerHolder.levelXML" />
   </ItemGroup>
 
 </Project>
