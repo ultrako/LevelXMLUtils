@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>LevelXMLUtils.Toolkit</AssemblyName>
+    <RootNamespace>LevelXMLUtils</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573;CS1572;CS1574;CS1584;CS1658;CS1570</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LevelXML" Version="4.3.1" />
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts/monogram-bitmap.json" LogicalName="LevelXMLUtils.Fonts.monogram-bitmap.json" />
+    <None Include="Fonts/credits.txt" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Controls/NassingerControls.levelXML" LogicalName="LevelXMLUtils.Controls.NassingerControls.levelXML" />
+    <EmbeddedResource Include="Controls/PlayerHolder.levelXML" LogicalName="LevelXMLUtils.Controls.PlayerHolder.levelXML" />
+  </ItemGroup>
+
+</Project>
