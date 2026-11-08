@@ -11,4 +11,9 @@
     <ProjectReference Include="..\Toolkit\Toolkit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- codegen makes default instances of LevelXML's entities by reflection, which a trimmed build would strip. -->
+    <TrimmerRootAssembly Include="LevelXML" />
+  </ItemGroup>
+
 </Project>

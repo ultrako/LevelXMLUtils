@@ -1,4 +1,3 @@
-
 name: .NET release
 
 on:
@@ -13,6 +12,9 @@ on:
             type: boolean
             default: false
 
+permissions:
+  contents: write
+
 jobs:
   release:
 
@@ -23,22 +25,23 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Publish Windows
-      run: dotnet publish --self-contained true -r win-x64 --property:PublishDir=publish-windows /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
-    - name: Publish Linux
-      run: dotnet publish --self-contained true -r linux-x64 --property:PublishDir=publish-linux /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
-    - name: Publish OSX
-      run: dotnet publish --self-contained true -r osx-x64 --property:PublishDir=publish-osx /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
-    - name: Zip release files
-      run: mkdir -p binaries;
-        for project in $(grep "Project(" LevelXMLUtils.sln | cut -d'"' -f4);
-        do cp $project/publish-windows/${project}.exe binaries/;
-        cp $project/publish-linux/$project binaries/${project}-Linux;
-        cp $project/publish-osx/$project binaries/${project}-Mac;
-        done;
+        dotnet-version: 8.0.x
+    - name: Publish the tools
+      # The command-line tools only: the other examples read files kept beside their source, so they are run from it.
+      run: |
+        mkdir -p binaries
+        for project in LevelTool Examples/Paperify Examples/ReverseLevel; do
+          name=$(basename $project)
+          for target in win-x64:Windows linux-x64:Linux osx-x64:Mac osx-arm64:Mac-ARM; do
+            runtime=${target%%:*}
+            dotnet publish $project -c Release --self-contained true -r $runtime -o publish/$runtime/$name \
+              /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+          done
+          cp publish/win-x64/$name/$name.exe binaries/
+          cp publish/linux-x64/$name/$name binaries/$name-Linux
+          cp publish/osx-x64/$name/$name binaries/$name-Mac
+          cp publish/osx-arm64/$name/$name binaries/$name-Mac-ARM
+        done
     - name: Create a release
       uses: ncipollo/release-action@v1
       with:
