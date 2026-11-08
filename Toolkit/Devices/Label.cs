@@ -2,6 +2,8 @@ using LevelXML;
 namespace LevelXMLUtils.Devices;
 
 /// <summary>Text on a coloured box, in a group that Show and Hide make visible or not.</summary>
+/// <remarks>The font size is width * 2/3 * textSize, so a wide label needs a smaller textSize: work back from the font size you want,
+/// textSize = fontSize / (width * 2/3). A text box's x is the left edge of a box as wide as its longest line, the lines centred in it.</remarks>
 public class Label : TriggerContraption
 {
     public Input Show;

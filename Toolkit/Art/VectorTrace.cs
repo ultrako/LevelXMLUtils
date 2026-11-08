@@ -298,6 +298,13 @@ public class VectorTrace
 	/// Draws art shapes the way the game does (vertices joined by cubic curves from their handles, scaled so the box of the vertex positions, measured
 	/// from the origin, fills the width and height; non-zero fill), for previews and tests. The view's top left is (left, top) in the level.
 	/// </summary>
+	/// <remarks>
+	/// What the game does with an art shape: its width and height are a box centred on its position, and its vertices are scaled to fill the box, each
+	/// axis clamped to 0.1 to 10 times the vertices' span measured from 0 (with a span of 100, drawn between 10 and 1,000 units). An unset (NaN) width
+	/// or height makes it invisible. A vertex is written x_y_inX_inY_outX_outY, its handles relative to it, and every edge is a cubic curve: only
+	/// handles at 0, 0 make it straight. The game triangulates a shape the first time it is drawn, cutting each curved edge into at least 8 pieces, so
+	/// complex art costs on first sight.
+	/// </remarks>
 	public static SKBitmap Render(IEnumerable<Art> shapes, int width, int height, double left = 0, double top = 0, double zoom = 1, SKColor? background = null)
 	{
 		SKBitmap bitmap = new(width, height);

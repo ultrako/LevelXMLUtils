@@ -59,6 +59,14 @@ public record ControlsTuning
 	public bool TriggerClock { get; init; } = true;
 }
 
+/// <summary>
+/// A keyboard controls vehicle (Nassinger's): each key moves a part of it onto a sensor, and the key's On and Off outputs fire when it is pressed
+/// and released. The player has to press Space first to take hold of it. Put the level's spawn on <see cref="Handle"/>, with the character in a
+/// <see cref="PlayerHolder"/> pinned to the handle so he can grab it (the toolkit's is shaped for the pogostick guy), or use
+/// <see cref="SeatedControls"/>, which also keeps the jets' noise away from the player. The constructor's tuning makes taps reliable, and the
+/// repeat settings turn a held arrow key into steps. The keys keep working after the character is black-holed
+/// (<see cref="SeatedControls.BlackHoleOnGrab"/>).
+/// </summary>
 public class NassingerControls : TriggerContraption, IControls
 {
     public Output UpOn => Out(0);

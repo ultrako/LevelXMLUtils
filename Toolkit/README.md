@@ -4,6 +4,8 @@ A C# library for building Happy Wheels levels in code, on top of [LevelXML](http
 It covers trigger logic (gates, toggles, counters), a simulator to test that logic without the game, an optimizer and
 minifier for big levels, and converters from pictures to art shapes.
 
+How the game runs triggers, and its other rules for levels, are in [../docs](../docs/README.md).
+
 ## Trigger logic (`Logic/`)
 
 Happy Wheels triggers are state machines: each one is enabled or disabled, and when one fires, its targets run in
@@ -107,7 +109,8 @@ Small devices, each checked in the simulator by `Toolkit.Tests/DeviceTests.cs` (
 
 - `ColorLock`: coloured buttons that gate a level behind a code, for publishing a level only some people should play.
   An attempt is judged only once it's complete, so wrong clicks don't give the code away. `ColorLock.Parse("red,blue,...")`
-  reads a code. It keeps out casual players, not someone who reads the level file.
+  reads a code. It keeps out casual players, not someone who reads the level file. More in
+  [Devices/color-lock.md](Devices/color-lock.md).
 - `PhysicsRandom`: randomness, which triggers can't make: balls batted around a closed box by a motor, with sensors
   that only the balls set off (`Hits`). `Kick(k)` pushes a ball; connect it to the player's key presses so the
   outcome depends on their timing. Place it far from the camera; it takes about a dozen physics proxies.
@@ -120,6 +123,8 @@ Small devices, each checked in the simulator by `Toolkit.Tests/DeviceTests.cs` (
 - `ALU`, `Multiplier`, `HalfAdder`, `FullAdder`, `MultiAdder` (in `Computer/`): arithmetic on toggle chains.
 
 ## Memory and the processor (`Memory/`, `Computer/`)
+
+More in [Computer/README.md](Computer/README.md).
 
 - `MixedMemory`: rows of bits behind one address, any mix of read-write rows (`ReadWriteMemoryRow`, two triggers a bit),
   ROM rows (`ROMRow`, nearly free once the optimizer folds each cell into its row) and single-bit rows. An access
@@ -142,6 +147,8 @@ Small devices, each checked in the simulator by `Toolkit.Tests/DeviceTests.cs` (
   simulator, and `MixedMemoryTests.cs` checks memory against a plain array.
 
 ## CHIP-8 (`Computer/Chip8/`)
+
+More in [Computer/Chip8/README.md](Computer/Chip8/README.md).
 
 - `Chip8Machine` compiles a CHIP-8 program into triggers. The program is fixed when the level is built, so there is
   no fetch or decode: every instruction the program can reach (followed from 0x200 through its jumps, calls and
@@ -253,8 +260,9 @@ each have an `On` and an `Off` output.
   back, which makes taps reliable.
 - **Held keys:** a repeat interval for the arrow keys turns a held key into steps, on a trigger clock that also
   catches one-tick taps.
-- **Using it:** the player has to press Space first to take hold of the controls. They only work with the pogostick
-  guy (`Character.PogostickMan`, forced, his vehicle hidden).
+- **Using it:** the player has to press Space first to take hold of the controls. A player holder (`PlayerHolder`)
+  around the character makes sure he can grab them; the toolkit's is shaped for the pogostick guy
+  (`Character.PogostickMan`, forced, his vehicle hidden), and other characters need a holder shaped for them.
 - **`SeatedControls`:** puts the controls out of earshot of their jets, with the player in a seat at the spawn (the
   start trigger deletes the joint that linked the two, and the keys stay linked).
 

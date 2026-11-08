@@ -162,7 +162,8 @@ public class PixelArt
 
 	/// <summary>
 	/// The outline of a mask as closed loops of pixel-grid corners (x to the right, y down), with the interior on the
-	/// right of every edge (clockwise on screen) and collinear points removed.
+	/// right of every edge (clockwise on screen) and collinear points removed. Clockwise on screen around their bounding box's middle is how the game
+	/// loads polygons correctly.
 	/// </summary>
 	public static List<List<(int x, int y)>> Outline(bool[,] mask)
 	{

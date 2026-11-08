@@ -29,6 +29,12 @@ public sealed class TriggerNode
     public List<TriggerEdge> Outgoing { get; } = new();
 }
 
+/// <summary>
+/// A model of a level's activate triggers for tests: which are enabled, and what firing one does, depth first in target order the way
+/// the game runs them (<see cref="Pulse"/>), with what fired and how many actions it took. It only models activate triggers: targets that
+/// are anything else (sound and victory triggers, shapes, groups, joints) are left out, and so are triggers it wasn't given. To test that
+/// a device plays a sound or wins, check that a trigger that fires has it among its targets.
+/// </summary>
 public sealed class TriggerGraph
 {
     private static readonly ConditionalWeakTable<ActivateTrigger, TriggerIdToken> _ids = new();

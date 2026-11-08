@@ -37,7 +37,7 @@ public record Chip8Quirks
 	// What the fused routines need on top of Octo's behaviour for Danm8ku (its bullet movement)
 	public static Chip8Quirks Danm8kuFused => Octo with { FuseTimerWaits = true, FusedRoutines = new[]
 		{ FusedRoutine.Danm8kuDrawBullets, FusedRoutine.Danm8kuActBullets, FusedRoutine.Danm8kuMoveBullet, FusedRoutine.Danm8kuDrawBullet, FusedRoutine.Danm8kuGogoBullet, FusedRoutine.Danm8kuPewPew, FusedRoutine.Danm8kuUpdatePlayer } };
-	// What the CHIP-8 Archive's programs run on: Octo, with its quirk flags all off (each program may turn some on; see docs/chip8.md)
+	// What the CHIP-8 Archive's programs run on: Octo, with its quirk flags all off (each program may turn some on; see README.md in this folder)
 	public static Chip8Quirks Octo => new() { ShiftUsesVY = true, LoadStoreIncrementsI = true, JumpUsesV0 = true, LogicResetsVF = false, ClipSprites = false, DisplayWait = false, FontAddress = 0, WaitForKeyRelease = true };
 	public static Chip8Quirks Modern => new() { ShiftUsesVY = false, LoadStoreIncrementsI = false, JumpUsesV0 = true, LogicResetsVF = false, ClipSprites = true, DisplayWait = false };
 }

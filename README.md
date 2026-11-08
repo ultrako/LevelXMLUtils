@@ -12,6 +12,12 @@ A collection of programs that parse Happy Wheels LevelXML strings and transform 
 - `tools/game-mod`: a modded build of the web game served locally, to play a level XML file like a published level
   ([README](tools/game-mod/README.md)).
 
+## How the game works
+
+[docs/](docs/README.md) collects what was learned about the game building big trigger levels: how triggers run, the
+limits on a level's size, saving and publishing, the frame rate, physics, sound and keyboard controls, and notes on the
+processor and CHIP-8 devices.
+
 ## Examples
 
 Small programs that show the basics of the LevelXML library: read a level from stdin, change its entities, write

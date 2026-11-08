@@ -47,6 +47,8 @@ public class SeatedControls : TriggerContraption
 	// grabbed the seat: until then the keys don't reach the controls), when it starts colliding with characters only. That black-holes the
 	// character, sends the camera to the top left, and black-holes anything jointed to him (the seat; the controls were unlinked from it at
 	// the start, and the seat's pin to the world is deleted just before), and the keys still reach the controls: the vehicles stay linked.
+	// The black hole spreads through every joint, joints to the world included: with the seat still pinned to the world it would take the controls
+	// (pinned to the world too) and the keys would die, hence deleting the seat's pins first. Afterwards the controls still work.
 	// Returns the shape, which the level adds.
 	// seatPins: the pins to the world of a seat the level brings, deleted with the PlayerHolder's
 	// size: the hole's width and height; at: its centre (default the spawn). It has to reach the character's own parts: with the irresponsible dad in a

@@ -413,7 +413,8 @@ public class LevelCruncher
     /// one list once the vertices are written at a common scale: each shape's vertices are divided by its own width and height, which keeps
     /// them centred where they were, identical outlines (compared at <paramref name="scale"/>) get one id, and each list is written at a span
     /// its shapes can all be drawn at (see below). Every shape's box is untouched. A level with many copies of a few sprites at different
-    /// distances had 1,216 art shapes but only 25 outlines up to scale.
+    /// distances had 1,216 art shapes but only 25 outlines up to scale. The game reads the lists in document order, keeping them by id (polygons and
+    /// art shapes share one id table), so a list is written at the first shape in the file that uses it.
     /// </summary>
     public static void ShareArtVertices(XElement level, double scale = 100)
     {
@@ -567,6 +568,12 @@ public class LevelCruncher
         return Regex.Replace(Regex.Replace(xml, "\" >", "\">"), "\" />", "\"/>");
     }
 
+    /// <summary>
+    /// Writes the level XML with what the game doesn't need left out: default fields, the activate action on trigger
+    /// targets, positions of triggers that have no sensor, and optionally rounded numbers, shared art outlines and
+    /// straight-edged art as polygons (the game cuts every art-shape edge into curve pieces when it first draws it, so a
+    /// polygon is cheaper for the same straight edges). Which fields are safe to leave out, and which aren't, is in README.md in this folder.
+    /// </summary>
     public static string MinifyRelayTriggers(string levelXML, int? roundDecimals = null, bool shareArtVertices = false, bool straightArtToPolygons = false, int? pictureDecimals = null)
     {
         XElement level = XElement.Parse(levelXML);

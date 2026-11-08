@@ -24,6 +24,8 @@ node tools/serve.mjs --level-dir ~/levels
   FILE.xml` sets a level to play when none is chosen.
 - **The character:** a level whose `<info>` has `f="t"` starts as its character `c`; otherwise you get character
   select.
+- **Reloading:** once a level starts, the game rewrites the address to `?level_id=-2` (the fake id the local level
+  gets), and reloading that address doesn't load the file again. Use Restart, or go back to the `?local=` address.
 - **The site's own page:** `http://localhost:8080/happy_wheels.tjf?local=NAME.xml` works too, without the folder in the
   level browser.
 - **Safety:** only plain `*.xml` names inside the folder are served. Any web page you visit can make your browser
