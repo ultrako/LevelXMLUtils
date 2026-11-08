@@ -153,7 +153,8 @@ public class InstantToggleChain : TriggerContraption, ICounter
 		}
 		Clears = toggles.Select(toggle => toggle.Clear).ToList();
 		Sets = toggles.Select(toggle => toggle.Set).ToList();
-		Entities = toggles.SelectMany(toggle => toggle.Entities).ToList();
+		// keeps what a subclass added (Addressor's NOT relays), adding the toggles' panels
+		Entities = Entities.Union<Entity>(toggles.SelectMany(toggle => toggle.Entities), ReferenceEqualityComparer.Instance).ToList();
 	}
 }
 

@@ -18,3 +18,17 @@ public class EveryFrameTrigger : ActivateTrigger
 		this.StartDisabled = false;
 	}
 }
+/// <summary>A small falling square: it touches an EveryFrameTrigger (triggered by anything) placed where it falls, so that one starts
+/// on the first frame.</summary>
+public class TinyFallingSquare : Rectangle
+{
+	public TinyFallingSquare(double x=0, double y=0) : base()
+	{
+		this.X = x;
+		this.Y = y;
+		this.Width = 5;
+		this.Height = 5;
+		this.Fixed = false;
+		this.Density = 0.1;
+	}
+}

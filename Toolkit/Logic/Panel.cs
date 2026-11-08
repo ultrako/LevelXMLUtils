@@ -107,3 +107,18 @@ public class Panel : TriggerContraption {
 		}
 	}
 }
+
+/// <summary>A row of n panels side by side from (x, y), their inputs and resets as lists in the same order.</summary>
+public class PanelRow : TriggerContraption
+{
+	public IList<Panel> Panels { get; }
+	public IList<Input> Inputs;
+	public IList<Input> Resets;
+	public PanelRow(int n, double x, double y, double width, double height, bool hasOff = true, int onColor = 0x00FF00)
+	{
+		Panels = Enumerable.Range(0, n).Select(index => new Panel(x + width * index, y, width, height, hasOff: hasOff, onColor: onColor)).ToList();
+		Inputs = Panels.Select(panel => panel.Input).ToList();
+		Resets = Panels.Select(panel => panel.Reset).ToList();
+		Entities = Panels.SelectMany(panel => panel.Entities).ToList();
+	}
+}

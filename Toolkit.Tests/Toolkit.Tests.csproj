@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Toolkit\Toolkit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../Examples/Chip8Demo/programs/*.ch8" Link="chip8/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -47,3 +47,38 @@ public class Relay : TriggerContraption {
 		Disable = Disable.Concat(panel.Reset);
 	}
 }
+
+/// <summary>A row of n relays, side by side from (x, y), with their inputs and outputs as lists in the same order.</summary>
+public class MultiRelay : TriggerContraption
+{
+	public IList<Relay> Relays { get; }
+	public IList<Input> Inputs;
+	public IList<Output> Outputs;
+	public IList<Input> Enables;
+	public IList<Input> Disables;
+
+	public MultiRelay(int n, double x=0, double y=0, double width=100, double height=100, bool startDisabled=false)
+	{
+		Relays = Enumerable.Range(0, n).Select(i => new Relay(x + width * i, y, width, height, startDisabled)).ToList();
+		Inputs = Relays.Select(relay => relay.Input).ToList();
+		Outputs = Relays.Select(relay => relay.Output).ToList();
+		Enables = Relays.Select(relay => relay.Enable).ToList();
+		Disables = Relays.Select(relay => relay.Disable).ToList();
+		Entities = Relays.SelectMany(relay => relay.Entities).ToList();
+	}
+
+	/// <summary>Starts the relays disabled where val has a 1 bit, the lowest bit first.</summary>
+	public void SetValue(uint val)
+	{
+		if (val >= Math.Pow(2, Relays.Count)) { throw new ArgumentOutOfRangeException(nameof(val), "val was higher than the row of relays could store!"); }
+		for (int index = 0; index < Relays.Count; index++) { Relays[index].StartDisabled = ((val >> index) % 2) == 1; }
+	}
+
+	public void AddVisualization()
+	{
+		foreach (Relay relay in Relays) { relay.AddVisualization(); }
+		Entities = Relays.SelectMany(relay => relay.Entities).ToList();
+		Enables = Relays.Select(relay => relay.Enable).ToList();
+		Disables = Relays.Select(relay => relay.Disable).ToList();
+	}
+}

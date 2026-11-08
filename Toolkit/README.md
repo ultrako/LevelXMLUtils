@@ -97,6 +97,67 @@ read.Output.Connect(result.Input);
 
 `Toolkit.Tests/LogicRecipeTests.cs` builds each recipe exactly as written here and checks it in the simulator.
 
+The same gates come as classes, `And`, `Or`, `Not`, `Xnor` and `Xor`, with `start` as `Reset` and `finish` as
+`PowerLast` where a gate needs them. `MultiRelay` and `PanelRow` are rows of n relays or panels, with their inputs
+and outputs as lists. `Toolkit.Tests/DeviceTests.cs` checks the gate classes.
+
+## Devices (`Devices/`)
+
+Small devices, each checked in the simulator by `Toolkit.Tests/DeviceTests.cs` (and `ColorLockTests.cs`):
+
+- `ColorLock`: coloured buttons that gate a level behind a code, for publishing a level only some people should play.
+  An attempt is judged only once it's complete, so wrong clicks don't give the code away. `ColorLock.Parse("red,blue,...")`
+  reads a code. It keeps out casual players, not someone who reads the level file.
+- `PhysicsRandom`: randomness, which triggers can't make: balls batted around a closed box by a motor, with sensors
+  that only the balls set off (`Hits`). `Kick(k)` pushes a ball; connect it to the player's key presses so the
+  outcome depends on their timing. Place it far from the camera; it takes about a dozen physics proxies.
+- `ClickableToggle`: on and off by clicking. `Label`: text on a box that can be shown and hidden. `Numpad`: ten
+  clickable keys that send a digit's bits.
+- `DecimalDisplay` and `HexDisplay` (and `DecimalDisplays`/`HexDisplays` for several): a digit from four bits.
+- `BCDCounter` (and `BCDCounters`): a decimal digit that counts and carries, with its nines' complement.
+  `BidirectionalUnaryCounter`: a one-hot counter that steps both ways. `Addressor`: a binary counter whose
+  `ProbeUnary` fires every address output except the current value's (the processor's instruction decoder).
+- `ALU`, `Multiplier`, `HalfAdder`, `FullAdder`, `MultiAdder` (in `Computer/`): arithmetic on toggle chains.
+
+## Memory and the processor (`Memory/`, `Computer/`)
+
+- `MixedMemory`: rows of bits behind one address, any mix of read-write rows (`ReadWriteMemoryRow`, two triggers a bit),
+  ROM rows (`ROMRow`, nearly free once the optimizer folds each cell into its row) and single-bit rows. An access
+  switches only the current block and row, so it costs a few hundred actions however many rows there are. An address
+  past the last row reads and writes nothing. `ReadWriteMemory` and `ReadOnlyMemory` are the plain kinds.
+- `Processor`: a programmable computer in triggers. Word and address are the same width (`bits`); an instruction is
+  an opcode word and up to two operand words, (source, destination). There are 50 opcodes: moves, add, subtract,
+  compare, jumps on the carry and zero flags, multiply by a constant, push and pop, drawing on a small screen, sound,
+  and two `Auxillary` outputs for the level to use. Registers 9 to 12 hold the Shift, Ctrl, Up and Down keys
+  (`NassingerControls`). `Start` runs instructions back to back in the frame until `StopStepping`, or until
+  `ResumeSteppingAfterFrame` waits a few frames.
+- `Assembler.Assemble(words)` turns `InstructionWord`s, with labels for jumps, into the memory image for
+  `SetInitialMemory`.
+- Cost, measured in the simulator: about 3,000 to 3,500 actions an instruction at 9 bits (an add between registers,
+  a load, a store), a little more at 12 and 16 bits, so roughly 20 instructions a frame. Full read-write memory at 9
+  bits is about 12,700 triggers, at 11 bits 55,000; 12 bits is over the game's limit. ROM is limited by file size.
+- Reading a run in the simulator: a memory row's `BitTriggers` are the triggers holding its bits, each enabled while
+  its bit is 1, and `row.ValueIn(graph)` reads the row's value. The processor exposes `Registers` and `MemoryRows`.
+- `Examples/ProcessorDemo` builds a level to try it by hand. `Toolkit.Tests/ProcessorTests.cs` runs programs in the
+  simulator, and `MixedMemoryTests.cs` checks memory against a plain array.
+
+## CHIP-8 (`Computer/Chip8/`)
+
+- `Chip8Machine` compiles a CHIP-8 program into triggers. The program is fixed when the level is built, so there is
+  no fetch or decode: every instruction the program can reach (followed from 0x200 through its jumps, calls and
+  skips, with what is known about the registers at each) is its own short trigger program, and a one-hot relay per
+  instruction says which runs next. A frame clock runs `tickrate` instructions a game frame. Memory is a
+  `MixedMemory`: RAM only where the program can store (worked out from the program, and measured by
+  `Chip8Machine.MeasureWrites` for stores it can't bound), ROM everywhere else.
+- `Chip8` is a plain C# interpreter, the reference the machine is checked against (`Chip8MachineTests` runs both
+  side by side, register for register), and a way to measure what a game needs. `Chip8Quirks` holds the behaviours
+  interpreters disagree on: `Vip` (the original COSMAC VIP), `Modern`, and `Octo` (what the CHIP-8 Archive's games
+  run on). The lockstep runs of every Danm8ku wave and the cost measurements take about half an hour, so they
+  only run with `SLOW_TESTS=1 dotnet test Toolkit.Tests`; a plain `dotnet test` keeps a few minutes of them.
+- `Examples/Chip8Demo` builds a playable level from a `.ch8` file, with the keyboard controls, optional physics
+  randomness for `CXNN` and an optional colour lock; its `measure` command runs a program in the interpreter. Three
+  CC0 games from the CHIP-8 Archive are included with presets.
+
 ## Simulator (`Simulation/TriggerGraph.cs`)
 
 `TriggerGraph.FromTriggers(triggers)` builds a model of the triggers' enabled state and targets. `Pulse(id)` fires a

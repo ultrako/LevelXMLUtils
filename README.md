@@ -1,9 +1,10 @@
 # LevelXMLUtils
 A collection of programs that parse Happy Wheels LevelXML strings and transform them in some way.
 
-- `Toolkit`: a library for building levels in code: trigger logic, a trigger simulator, an optimizer and minifier,
-  level-to-C# code generation, picture-to-art converters, video with sound, a first-person raycaster and keyboard
-  controls.
+- `Toolkit`: a library for building levels in code: trigger logic and small devices (a colour-code lock, physics
+  randomness, counters, displays), a programmable processor, a CHIP-8 compiler, a trigger simulator, an optimizer
+  and minifier, level-to-C# code generation, picture-to-art converters, video with sound, a first-person raycaster
+  and keyboard controls.
   See [Toolkit/README.md](Toolkit/README.md).
 - `LevelTool`: the toolkit's command line (codegen, minify, trace, svg, pixelart).
 - `tools/video-frames`: chooses a video's frames for a trigger screen ([README](tools/video-frames/README.md)).
@@ -22,5 +23,9 @@ it to stdout.
   side about every 20 units). The output has only those shapes and their copies.
 - `Examples/RaycastDemo`: a playable first-person level made with the toolkit's raycaster and controls, a lever
   that lowers spikes and a finish line: `dotnet run --project Examples/RaycastDemo -- demo.xml`
+- `Examples/ProcessorDemo`: a programmable trigger computer to try by hand, with clickable memory and the
+  instruction reference written in the level: `dotnet run --project Examples/ProcessorDemo -- processor.xml`
+- `Examples/Chip8Demo`: a CHIP-8 game compiled into triggers, playable with the keyboard; three CC0 games from the
+  CHIP-8 Archive are included: `dotnet run --project Examples/Chip8Demo -c Release -- br8kout br8kout.xml`
 - `Examples/VideoDemo`: Bad Apple!! with sound, from the video file you give it (not included):
   `Examples/VideoDemo/make.sh badapple.webm out.xml`
