@@ -1,0 +1,49 @@
+
+name: .NET release
+
+on:
+  workflow_dispatch:
+    inputs:
+        release-version:
+            description: "The version of the release"
+            required: true
+        is-prerelease:
+            description: "Whether this is a prerelease version"
+            required: true
+            type: boolean
+            default: false
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish Windows
+      run: dotnet publish --self-contained true -r win-x64 --property:PublishDir=publish-windows /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+    - name: Publish Linux
+      run: dotnet publish --self-contained true -r linux-x64 --property:PublishDir=publish-linux /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+    - name: Publish OSX
+      run: dotnet publish --self-contained true -r osx-x64 --property:PublishDir=publish-osx /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
+    - name: Zip release files
+      run: mkdir -p binaries;
+        for project in $(grep "Project(" LevelXMLUtils.sln | cut -d'"' -f4);
+        do cp $project/publish-windows/${project}.exe binaries/;
+        cp $project/publish-linux/$project binaries/${project}-Linux;
+        cp $project/publish-osx/$project binaries/${project}-Mac;
+        done;
+    - name: Create a release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ inputs.release-version }}
+        draft: false
+        prerelease: ${{ inputs.is-prerelease }}
+        artifacts: "binaries/*"
